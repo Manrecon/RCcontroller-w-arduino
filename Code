@@ -1,0 +1,60 @@
+int ch1; // Here's where we'll keep our channel values
+int ch2;
+int ch3;
+
+int forward;
+int reverse;
+
+int pwm_a = 5;  //PWM control for motor outputs
+int pwm_b = 6;  //PWM control for motor outputs
+int M_A = 4;  //direction control for motor outputs
+int M_B = 7;  //direction control for motor outputs
+
+void setup() {
+
+pinMode(10, INPUT);
+pinMode(11, INPUT);
+
+Serial.begin(9600); // Pour a bowl of Serial (for debugging)
+
+  pinMode(pwm_a, OUTPUT);  //Set control pins to be outputs
+  pinMode(pwm_b, OUTPUT);
+  pinMode(M_A, OUTPUT);
+  pinMode(M_B, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  
+  ch3 = pulseIn(9, HIGH, 25000); // Read the pulse width of  
+  ch1 = pulseIn(10, HIGH, 25000); // each channel
+
+////////////////////////////////////////////////////////////////////////////////////////////
+forward = map(ch3, 1000, 2000, -155, 155);
+forward = constrain(forward, -40, 40);
+if(forward > 0)
+{
+  digitalWrite(M_A,LOW);
+  digitalWrite(M_B,HIGH);
+}
+if(forward < 0)
+{
+  digitalWrite(M_A,HIGH);
+  digitalWrite(M_B,HIGH);
+}
+reverse = map(ch1, 1000, 2000, -155, 155);
+reverse = constrain(reverse, -40, 40);
+if(reverse >0)
+{
+  analogWrite(pwm_a, forward);
+  analogWrite(pwm_b, forward);
+}
+if(reverse < 0)
+{
+  analogWrite(pwm_a, 0);
+  analogWrite(pwm_b, 0);
+}
+Serial.print("forward:");
+Serial.println(forward);
+Serial.print("reverse:");
+Serial.println(reverse);
